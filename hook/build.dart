@@ -50,13 +50,13 @@ void main(List<String> args) async {
             'Foundation',
           ],
           if (targetOS == OS.macOS && arch == Architecture.arm64)
-            '-DMLK_FORCE_AARCH64',
+            '-DMLD_FORCE_AARCH64',
           if (targetOS == OS.android) '-Wl,-z,max-page-size=16384',
         ],
         // Compiler defines (equivalent to target_compile_definitions)
         defines: {
-          'MLK_CONFIG_PARAMETER_SET': '$level',
-          'MLK_CONFIG_NAMESPACE_PREFIX': 'mldsa$level',
+          'MLD_CONFIG_PARAMETER_SET': '$level',
+          'MLD_CONFIG_NAMESPACE_PREFIX': 'mldsa$level',
           // Define DART_SHARED_LIB to ensure proper symbol visibility if needed
           'DART_SHARED_LIB': null,
         },
