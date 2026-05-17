@@ -1,0 +1,43 @@
+output: '../lib/src/mldsa44_bindings.dart'
+name: 'MLDSA44'
+description: 'Holds ffigen generated implementation bindings for MLDSA44'
+headers:
+  entry-points:
+    - '../src/include/mldsa44_api.h'
+comments: true
+preamble: |
+  // ignore_for_file: always_specify_types
+  // ignore_for_file: camel_case_types
+  // ignore_for_file: non_constant_identifier_names
+
+ffi-native:
+  asset-id: 'src/mldsa44_bindings.dart'
+  enabled: true
+
+functions:
+  include:
+    - 'mldsa44.*'
+
+# ADD THIS: This stops the flood of system typedefs
+typedefs:
+  include:
+    - 'mldsa44.*'  # Only include typedefs starting with mlkem512
+  exclude:
+    - '.*'          # Explicitly exclude everything else just to be safe
+
+structs:
+  exclude:
+    - '.*'
+
+unions:
+  exclude:
+    - '.*'
+
+# ALSO CONSIDER: If you have global variables you don't want
+globals:
+  exclude:
+    - '.*'
+
+macros:
+  include:
+    - '^MLDSA44.*'
