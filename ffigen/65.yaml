@@ -11,7 +11,7 @@ preamble: |
   // ignore_for_file: non_constant_identifier_names
 
 ffi-native:
-  asset-id: 'src/mldsa65_bindings.dart'
+  asset-id: 'package:mldsa_native/src/mldsa65_bindings.dart'
   enabled: true
 
 functions:

@@ -4,7 +4,12 @@ import 'dart:typed_data';
 import 'package:mldsa_native/mldsa44.dart';
 import 'package:mldsa_native/mldsa65.dart';
 import 'package:mldsa_native/mldsa87.dart';
-import 'package:mldsa_native/src/models.dart' show getRandomCoins;
+import 'package:mldsa_native/src/models.dart'
+    show
+        MLDSAContextTooLong,
+        MLDSAInvalidKeySize,
+        MLDSACoinsWrongSize,
+        getRandomCoins;
 import 'package:mldsa_native/src/shared.dart';
 import 'package:test/test.dart';
 
@@ -162,6 +167,60 @@ void _testVariant(MLDSA Function() factory, {required int sigSize}) {
       final msg = utf8.encode('test');
       final sig = mldsa.sign(kp.secretKey, msg, context: utf8.encode('ctx'));
       expect(mldsa.verify(kp.publicKey, msg, sig), isFalse);
+    });
+  });
+
+  group('input validation', () {
+    test('sign rejects a wrong-sized secret key', () {
+      final kp = mldsa.generateKeyPair();
+      final short = Uint8List.fromList(
+        kp.secretKey.sublist(0, kp.secretKey.length - 1),
+      );
+      expect(
+        () => mldsa.sign(short, utf8.encode('test')),
+        throwsA(isA<MLDSAInvalidKeySize>()),
+      );
+    });
+
+    test('sign rejects wrong-sized coins', () {
+      final kp = mldsa.generateKeyPair();
+      expect(
+        () => mldsa.sign(kp.secretKey, utf8.encode('test'), coins: Uint8List(31)),
+        throwsA(isA<MLDSACoinsWrongSize>()),
+      );
+    });
+
+    test('sign rejects an over-long context', () {
+      final kp = mldsa.generateKeyPair();
+      expect(
+        () => mldsa.sign(kp.secretKey, utf8.encode('test'), context: Uint8List(256)),
+        throwsA(isA<MLDSAContextTooLong>()),
+      );
+    });
+
+    test('sign accepts a maximum-length context', () {
+      final kp = mldsa.generateKeyPair();
+      final msg = utf8.encode('test');
+      final ctx = Uint8List(255);
+      final sig = mldsa.sign(kp.secretKey, msg, context: ctx);
+      expect(mldsa.verify(kp.publicKey, msg, sig, context: ctx), isTrue);
+    });
+
+    test('verify returns false for a wrong-sized public key', () {
+      final kp = mldsa.generateKeyPair();
+      final msg = utf8.encode('test');
+      final sig = mldsa.sign(kp.secretKey, msg);
+      final short = Uint8List.fromList(
+        kp.publicKey.sublist(0, kp.publicKey.length - 1),
+      );
+      expect(mldsa.verify(short, msg, sig), isFalse);
+    });
+
+    test('verify returns false for an over-long context', () {
+      final kp = mldsa.generateKeyPair();
+      final msg = utf8.encode('test');
+      final sig = mldsa.sign(kp.secretKey, msg);
+      expect(mldsa.verify(kp.publicKey, msg, sig, context: Uint8List(256)), isFalse);
     });
   });
 }

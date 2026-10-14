@@ -1,6 +1,6 @@
 name: mldsa_native
 description: "ML-DSA (FIPS 204) post-quantum signatures for Flutter. Native C/assembly implementation via FFI."
-version: 1.0.0
+version: 2.0.0
 repository: https://github.com/rkz-app/mldsa_native_port
 main: https://github.com/rkz-app/mldsa_native_port/blob/main/README.md
 

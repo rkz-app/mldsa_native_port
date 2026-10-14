@@ -36,7 +36,7 @@ Add `mldsa_native` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  mldsa_native: ^0.0.1
+  mldsa_native: ^2.0.0
 ```
 
 ### Basic Usage
@@ -136,6 +136,12 @@ final fail = mldsa.verify(pk, msg, sig, context: utf8.encode('other'));
 - `MLDSAException` — base exception for all ML-DSA errors
 - `MLDSAKeyPairGenerationException` — key generation failed (also thrown on signing failures)
 - `MLDSACoinsWrongSize` — the provided `coins` buffer was not exactly 32 bytes
+- `MLDSAInvalidKeySize` — the signing key passed to `sign` was not the exact size
+  required by the parameter set
+- `MLDSAContextTooLong` — the context string passed to `sign` exceeded 255 bytes
+
+`verify` never throws: malformed inputs (wrong-sized public key or signature, or
+an over-long context) are rejected up front and reported as `false`.
 
 ## About
 
